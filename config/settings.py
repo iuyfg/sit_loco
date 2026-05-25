@@ -1,13 +1,34 @@
+# config/settings.py
 import os
 from pathlib import Path
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-test-key-12345'
-DEBUG = True
-ALLOWED_HOSTS = []
+# 🔐 Секретный ключ и отладка — через переменные окружения
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-test-key-12345')
+DEBUG = config('DEBUG', default=True, cast=bool)
 
+# 🌐 ALLOWED_HOSTS: гибкая настройка для локалки и продакшена
+# По умолчанию: localhost и 127.0.0.1
+# Формат переменной окружения: "domain1.com,domain2.com" (через запятую)
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=lambda v: [s.strip() for s in v.split(',') if s.strip()]
+)
+
+# ➕ Автоматически добавляем домены Vercel (если приложение запущено там)
+if os.environ.get('VERCEL_URL'):
+    ALLOWED_HOSTS.append(os.environ['VERCEL_URL'])
+    ALLOWED_HOSTS.append(f'www.{os.environ["VERCEL_URL"]}')
+
+# ➕ Опционально: кастомный домен через переменную окружения
+custom_domain = config('CUSTOM_DOMAIN', default='')
+if custom_domain:
+    ALLOWED_HOSTS.append(custom_domain)
+
+# 🧩 Приложения
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -19,6 +40,7 @@ INSTALLED_APPS = [
     'main',
 ]
 
+# ⚙️ Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -32,6 +54,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# 🗄️ База данных
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -39,6 +62,7 @@ DATABASES = {
     }
 }
 
+# 📄 Шаблоны
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -55,22 +79,28 @@ TEMPLATES = [
     },
 ]
 
+# 👤 Кастомная модель пользователя
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
+# 🔐 Авторизация
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'home'
 
+# 🌍 Локаль и время
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
+# 🎨 Статика
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# 🖼️ Медиафайлы
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# 🆔 Default field for auto-incrementing primary keys
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
