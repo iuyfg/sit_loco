@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Новая заявка на ремонт</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">ФИО *</label>
+                            <input type="text" name="full_name" class="form-control" value="{{ user.get_full_name|default:user.username }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Телефон *</label>
+                            <input type="text" name="phone" class="form-control" value="{{ user.phone }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Предприятие</label>
+                            <input type="text" name="company" class="form-control" value="{{ user.company }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Тип локомотива</label>
+                            <input type="text" name="locomotive_type" class="form-control" placeholder="Электровоз, тепловоз...">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Модель</label>
+                            <input type="text" name="locomotive_model" class="form-control" placeholder="2ЭС6, ТЭМ18ДМ...">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Номер</label>
+                            <input type="text" name="locomotive_number" class="form-control" placeholder="001">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Вид ремонта</label>
+                            <select name="repair_type" class="form-select">
+                                <option value="Текущий ремонт">Текущий ремонт</option>
+                                <option value="Средний ремонт">Средний ремонт</option>
+                                <option value="Капитальный ремонт">Капитальный ремонт</option>
+                                <option value="Диагностика">Диагностика</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check mt-4">
+                                <input type="checkbox" name="urgent" class="form-check-input" id="urgent">
+                                <label class="form-check-label text-danger" for="urgent">Срочная заявка</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Описание проблемы *</label>
+                            <textarea name="problem_description" rows="4" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Отправить заявку</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

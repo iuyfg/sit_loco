@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero секция -->
+    <div class="text-center mb-5 pb-3 border-bottom border-danger">
+        <h1 class="display-4 fw-bold text-dark">О компании</h1>
+        <div class="separator mx-auto" style="width: 80px; height: 3px; background-color: #E30613;"></div>
+        <p class="lead text-muted mt-3">Крупнейший в Европе локомотиворемонтный холдинг</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Кто мы -->
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-danger bg-opacity-10 p-3 rounded-circle me-3">
+                            <i class="fas fa-train fa-2x text-danger"></i>
+                        </div>
+                        <h3 class="mb-0 fw-bold">Кто мы</h3>
+                    </div>
+                    <p class="text-muted">ООО «ЛокоТех-Сервис» — крупнейшая российская компания, обеспечивающая полный цикл сервисного обслуживания, ремонта и модернизации тягового подвижного состава (локомотивов).</p>
+                    <p class="text-muted mt-3">Входит в Группу Компаний «ЛокоТех» — крупнейший в Европе локомотиворемонтный холдинг.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Миссия -->
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-danger bg-opacity-10 p-3 rounded-circle me-3">
+                            <i class="fas fa-flag-checkered fa-2x text-danger"></i>
+                        </div>
+                        <h3 class="mb-0 fw-bold">Наша миссия</h3>
+                    </div>
+                    <p class="text-muted">Обеспечивать безопасность, надёжность и бесперебойность железнодорожных перевозок путём профессионального сервисного обслуживания, качественного ремонта и своевременной модернизации тягового подвижного состава, способствуя развитию транспортной системы России.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ключевые факты -->
+        <div class="col-12 mt-3">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-danger text-white text-center py-3 border-0">
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-chart-line me-2"></i>Ключевые факты</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4 text-center">
+                        <div class="col-md-3 col-6">
+                            <div class="display-4 fw-bold text-danger">88</div>
+                            <p class="text-muted mb-0">сервисных депо</p>
+                            <small class="text-secondary">по всей России</small>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="display-4 fw-bold text-danger">5 000+</div>
+                            <p class="text-muted mb-0">квалифицированных</p>
+                            <small class="text-secondary">сотрудников</small>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="display-4 fw-bold text-danger">17 000+</div>
+                            <p class="text-muted mb-0">устранённых</p>
+                            <small class="text-secondary">замечаний в 2025</small>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="display-4 fw-bold text-danger">368</div>
+                            <p class="text-muted mb-0">обученных</p>
+                            <small class="text-secondary">наставников</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

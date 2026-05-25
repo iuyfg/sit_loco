@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Шапка профиля -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="bg-danger p-4 text-white">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div>
+                            <h2 class="mb-1 fw-bold">Личный кабинет</h2>
+                            <p class="mb-0 opacity-75">Управление профилем и заявками</p>
+                        </div>
+                        <div class="mt-2 mt-sm-0">
+                            <a href="{% url 'create_request' %}" class="btn btn-light text-danger fw-bold">
+                                <i class="fas fa-plus-circle me-2"></i>Новая заявка
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Левая колонка - информация о пользователе -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden sticky-top" style="top: 100px;">
+                <div class="card-body text-center p-4">
+                    <!-- Аватар -->
+                    <div class="position-relative d-inline-block mb-3">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" class="rounded-circle img-fluid shadow"
+                                 style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #E30613;">
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto shadow"
+                                 style="width: 150px; height: 150px; border: 3px solid #E30613;">
+                                <i class="fas fa-user fa-4x text-secondary"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="fw-bold mb-1">{{ user.username }}</h3>
+                    <p class="text-muted mb-3">{{ user.email }}</p>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="bg-light rounded-3 p-2">
+                                <small class="text-muted">Телефон</small>
+                                <div class="fw-bold">{{ user.phone|default:"не указан" }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-light rounded-3 p-2">
+                                <small class="text-muted">Предприятие</small>
+                                <div class="fw-bold">{{ user.company|default:"не указано" }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-muted small">
+                        <i class="fas fa-calendar-alt me-1"></i> Регистрация: {{ user.date_joined|date:"d.m.Y" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка - заявки и редактирование -->
+        <div class="col-lg-8">
+            <!-- Вкладки -->
+            <ul class="nav nav-tabs mb-4 border-0" id="profileTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-semibold" data-bs-toggle="tab" data-bs-target="#requests" type="button" role="tab">
+                        <i class="fas fa-list me-2"></i>Мои заявки
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold" data-bs-toggle="tab" data-bs-target="#edit" type="button" role="tab">
+                        <i class="fas fa-edit me-2"></i>Редактировать профиль
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Вкладка "Мои заявки" -->
+                <div class="tab-pane fade show active" id="requests" role="tabpanel">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="ps-4">Дата</th>
+                                            <th>Локомотив</th>
+                                            <th>Вид ремонта</th>
+                                            <th>Срочность</th>
+                                            <th class="pe-4">Статус</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for req in user.repairrequest_set.all %}
+                                        <tr>
+                                            <td class="ps-4">{{ req.created_at|date:"d.m.Y" }}</td>
+                                            <td>
+                                                <span class="fw-medium">{{ req.locomotive_type|default:"—" }}</span>
+                                                <small class="text-muted d-block">{{ req.locomotive_number|default:"" }}</small>
+                                            </td>
+                                            <td>{{ req.repair_type|default:"—" }}</td>
+                                            <td>
+                                                {% if req.urgent %}
+                                                    <span class="badge bg-danger rounded-pill px-3 py-1">
+                                                        <i class="fas fa-bolt me-1"></i>Срочно
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary rounded-pill px-3 py-1">Обычная</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="pe-4">
+                                                <span class="badge bg-success rounded-pill px-3 py-1">В обработке</span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5 text-muted">
+                                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                                У вас пока нет заявок
+                                                <div class="mt-2">
+                                                    <a href="{% url 'create_request' %}" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-plus-circle me-1"></i>Создать первую заявку
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка "Редактировать профиль" -->
+                <div class="tab-pane fade" id="edit" role="tabpanel">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-body p-4">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fas fa-phone text-danger me-1"></i> Телефон
+                                        </label>
+                                        <input type="text" name="phone" class="form-control" value="{{ user.phone }}" placeholder="+7 (999) 123-45-67">
+                                        <div class="form-text">Для связи по заявкам</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fas fa-building text-danger me-1"></i> Предприятие
+                                        </label>
+                                        <input type="text" name="company" class="form-control" value="{{ user.company }}" placeholder="Название организации">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fas fa-camera text-danger me-1"></i> Аватар
+                                        </label>
+                                        <input type="file" name="avatar" class="form-control" accept="image/*">
+                                        <div class="form-text">Рекомендуемый размер 150x150 пикселей</div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 d-flex gap-2">
+                                    <button type="submit" class="btn btn-danger px-4">
+                                        <i class="fas fa-save me-2"></i>Сохранить изменения
+                                    </button>
+                                    <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-undo me-2"></i>Отмена
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
