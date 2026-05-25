@@ -7,7 +7,9 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
-DEBUG = config('DEBUG', default=False, cast=bool)
+
+# ✅ Исправлено: правильное преобразование строки "False" в boolean
+DEBUG = config('DEBUG', default='False').lower() in ('true', '1', 'yes')
 
 # ✅ Разрешаем домены Render + локалку
 ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1']
@@ -28,7 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← ОБЯЗАТЕЛЬНО ВТОРОЙ
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
