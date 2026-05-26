@@ -1,12 +1,12 @@
 # main/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe  # ← Добавили
 from .models import RepairRequest
 
 
 @admin.register(RepairRequest)
 class RepairRequestAdmin(admin.ModelAdmin):
-    # Отображаемые поля в списке
     list_display = (
         'id',
         'full_name',
@@ -15,15 +15,13 @@ class RepairRequestAdmin(admin.ModelAdmin):
         'locomotive_number',
         'repair_type',
         'urgent_icon',
-        'status_badge',        # ← Красивый бейдж (HTML)
+        'status_badge',
         'created_at_short',
     )
 
-    # ❌ ЗАКОММЕНТИРОВАНО: нельзя редактировать 'status' в списке,
-    # если в list_display вместо него используется 'status_badge'
+    # ❌ Закомментировано: конфликт с status_badge
     # list_editable = ('status',)
 
-    # Фильтры по бокам
     list_filter = (
         'status',
         'urgent',
@@ -32,7 +30,6 @@ class RepairRequestAdmin(admin.ModelAdmin):
         'locomotive_type',
     )
 
-    # Поля для поиска
     search_fields = (
         'full_name',
         'phone',
@@ -42,10 +39,8 @@ class RepairRequestAdmin(admin.ModelAdmin):
         'problem_description',
     )
 
-    # Количество записей на странице
     list_per_page = 25
 
-    # Поля, которые отображаются при редактировании
     fieldsets = (
         ('Контактная информация', {
             'fields': (
@@ -68,20 +63,19 @@ class RepairRequestAdmin(admin.ModelAdmin):
         }),
     )
 
-    # Только для чтения
     readonly_fields = ('created_at', 'updated_at')
 
-    # Действия с несколькими заявками (массовое изменение статуса)
     actions = ['mark_as_new', 'mark_as_in_progress', 'mark_as_completed', 'mark_as_cancelled']
 
-    # Кастомные иконки и статусы
+    # ✅ ИСПРАВЛЕНО: используем mark_safe для статического HTML
     def urgent_icon(self, obj):
         if obj.urgent:
-            return format_html('<span style="color: #E30613; font-size: 1.2rem;">⚠️</span> Срочно')
+            return mark_safe('<span style="color: #E30613; font-size: 1.2rem;">⚠️</span> Срочно')
         return '—'
 
     urgent_icon.short_description = 'Срочность'
 
+    # ✅ ИСПРАВЛЕНО: format_html с аргументами (всё верно, но для ясности)
     def status_badge(self, obj):
         status_colors = {
             'new': '#0d6efd',
@@ -109,7 +103,7 @@ class RepairRequestAdmin(admin.ModelAdmin):
 
     created_at_short.short_description = 'Дата создания'
 
-    # Действия (массовое изменение статуса)
+    # Действия
     def mark_as_new(self, request, queryset):
         updated = queryset.update(status='new')
         self.message_user(request, f'{updated} заявок переведены в статус "Новая"')
