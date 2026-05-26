@@ -12,7 +12,13 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
 DEBUG = config('DEBUG', default='False').lower() in ('true', '1', 'yes')
 
 # ✅ Разрешаем домены Render + локалку
-ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1']
+# ✅ Разрешаем домены Render + локалку
+ALLOWED_HOSTS = [
+    'sit-loco.onrender.com',           # ← Твой точный домен (ОБЯЗАТЕЛЬНО)
+    '*.onrender.com',                   # ← Wildcard для других поддоменов
+    'localhost',
+    '127.0.0.1',
+]
 extra_hosts = config('ALLOWED_HOSTS_EXTRA', default='')
 if extra_hosts:
     ALLOWED_HOSTS.extend([h.strip() for h in extra_hosts.split(',') if h.strip()])
