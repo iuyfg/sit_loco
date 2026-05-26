@@ -14,7 +14,7 @@ class RepairRequestAdmin(admin.ModelAdmin):
         'locomotive_number',
         'repair_type',
         'urgent_icon',
-        'status',  # ← ДОБАВЛЕНО для list_editable
+         # ← ДОБАВЛЕНО для list_editable
         'status_badge',
         'created_at_short',
     )
