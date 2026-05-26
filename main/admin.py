@@ -1,3 +1,4 @@
+# main/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import RepairRequest
@@ -5,7 +6,7 @@ from .models import RepairRequest
 
 @admin.register(RepairRequest)
 class RepairRequestAdmin(admin.ModelAdmin):
-    # Отображаемые поля в списке (ДОБАВЛЕН status)
+    # Отображаемые поля в списке
     list_display = (
         'id',
         'full_name',
@@ -14,10 +15,13 @@ class RepairRequestAdmin(admin.ModelAdmin):
         'locomotive_number',
         'repair_type',
         'urgent_icon',
-         # ← ДОБАВЛЕНО для list_editable
-        'status_badge',
+        'status_badge',        # ← Красивый бейдж (HTML)
         'created_at_short',
     )
+
+    # ❌ ЗАКОММЕНТИРОВАНО: нельзя редактировать 'status' в списке,
+    # если в list_display вместо него используется 'status_badge'
+    # list_editable = ('status',)
 
     # Фильтры по бокам
     list_filter = (
@@ -37,9 +41,6 @@ class RepairRequestAdmin(admin.ModelAdmin):
         'locomotive_number',
         'problem_description',
     )
-
-    # Поля, которые можно редактировать прямо в списке
-    list_editable = ('status',)
 
     # Количество записей на странице
     list_per_page = 25
@@ -70,7 +71,7 @@ class RepairRequestAdmin(admin.ModelAdmin):
     # Только для чтения
     readonly_fields = ('created_at', 'updated_at')
 
-    # Действия с несколькими заявками
+    # Действия с несколькими заявками (массовое изменение статуса)
     actions = ['mark_as_new', 'mark_as_in_progress', 'mark_as_completed', 'mark_as_cancelled']
 
     # Кастомные иконки и статусы
@@ -108,7 +109,7 @@ class RepairRequestAdmin(admin.ModelAdmin):
 
     created_at_short.short_description = 'Дата создания'
 
-    # Действия
+    # Действия (массовое изменение статуса)
     def mark_as_new(self, request, queryset):
         updated = queryset.update(status='new')
         self.message_user(request, f'{updated} заявок переведены в статус "Новая"')
